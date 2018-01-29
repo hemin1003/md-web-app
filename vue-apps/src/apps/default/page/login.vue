@@ -10,7 +10,7 @@
     <div class="l-btn-area">
       <x-button type="primary" @click="submit">登录</x-button> 
       <!-- <x-button @click="wxlogin"><i class="iconfont" style="vertical-align:0; color:#04be02; margin-right:5px;">&#xe60a;</i>微信授权登录</x-button> -->
-      <x-button v-link="'/register'">想成为推广大咖？</x-button>
+      <!--<x-button v-link="'/register'">想成为推广大咖？</x-button>-->
     </div>
   </div>
 </template>

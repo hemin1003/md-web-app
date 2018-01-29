@@ -10,15 +10,12 @@
       <!--bottom slot-->
       <div class="l-tabbar-box" slot="bottom" v-show="route.mainPage">
         <tabbar icon-class="vux-center">
-          
-          
           <tabbar-item v-link="{path:'/home', replace: true}" :selected="route.path === '/home'">
             <i slot="icon" class="iconfont">&#xe61c;</i>
             <span slot="label">总收益</span>
           </tabbar-item>
-           
-          <tabbar-item v-link="{path:'/activity', replace: true}" :selected="route.path === '/activity'">
-            <i slot="icon" class="iconfont">&#xe6d3;</i>
+          <tabbar-item v-link="{path:'/product', replace: true}" :selected="route.path === '/product'">
+            <i slot="icon" class="iconfont">&#xe774;</i>
             <span slot="label">提现中心</span>
           </tabbar-item>
          <!--

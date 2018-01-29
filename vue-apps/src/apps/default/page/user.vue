@@ -12,6 +12,7 @@
       <div style="width:40px;text-align:center;"><i class="iconfont icon-arrow">&#xe601;</i></div>
     </blur>
     <group class="l-group">
+      <!-- 
       <cell title="我的收益" link="/user/appointment">
         <i slot="icon" class="iconfont" style="background-color:#2ea748;">&#xe6d0;</i>
       </cell>
@@ -21,7 +22,7 @@
       <cell title="我的徒弟" link="/user/coupon">
         <i slot="icon" class="iconfont" style="background-color:#f19824;">&#xe625;</i>
       </cell>
-      <!-- <cell title="个人信息" link="/user/info">
+      <cell title="个人信息" link="/user/info">
         <i slot="icon" class="iconfont" style="background-color:#1ab9cf;">&#xe6b7;</i>
       </cell> -->
       <!--
@@ -44,9 +45,11 @@
       <cell title="400-820-XXXX" value="09:00-18:00" :is-link="true" @click="callPhone('400-820-XXXX')">
         <i slot="icon" class="iconfont" style="background-color:#fe486e;">&#xe652;</i>
       </cell>
+      <!--
       <cell v-if="userinfo.mobilePhone" title="退出登录" :is-link="true" @click="logout">
         <i slot="icon" class="iconfont" style="background-color:#999999;">&#xe7c7;</i>
       </cell>
+      -->
     </group>
   </div>
 </template>

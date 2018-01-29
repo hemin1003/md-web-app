@@ -1,71 +1,35 @@
 <template>
   <div>
-    <swiper :list="banner" loop auto height="9.0rem"></swiper>
-    <!--
-    <div class="l-margin-tb l-flex-hc" style="background-color:#fff;padding:0.75rem;">
-      <div class="l-rest">
-        <masker class="l-masker-item" :opacity="0.5" v-link="{path:'/booking'}">
-          <div class="l-img" :style="{backgroundImage: 'url(' + images.img1 + ')'}"></div>
-          <div class="l-title" slot="content">在线预约</div>
-        </masker>  
-      </div>
-      <div class="l-rest" style="margin-left:0.75rem;">
-        <masker class="l-masker-item" :opacity="0.5" v-link="{path:'/welfare'}">
-          <div class="l-img" :style="{backgroundImage: 'url(' + images.img2 + ')'}"></div>
-          <div class="l-title" slot="content">新人领福利</div>
-        </masker>
-      </div>
-    </div>
-    -->
     <div class="l-flex-wrap l-grid">
-      <div class="l-flex-vhc l-grid-item" v-link="{path: 'http://bj.news.163.com/18/0105/18/D7DI4989043897TC.html'}">
-        <img src="~assets/imgs/icon-001.jpg">
-        <p>企业简介</p>
+      <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
+        <h3 class="l-rest">今日收入</h3>
       </div>
-      <div class="l-flex-vhc l-grid-item" v-link="{path: 'https://www.lagou.com/gongsi/275828.html'}">
-        <img src="~assets/imgs/icon-002.jpg">
-        <p>企业荣誉</p>
-      </div> 
-      <!-- -->
-      <!-- 
-      <div class="l-flex-vhc l-grid-item" v-link="{path: '/store/list'}">
-        <img src="~assets/imgs/icon-003.jpg">
-        <p>门店展示</p>
-      </div>
-      -->
-      <div class="l-flex-vhc l-grid-item" v-link="{path: 'http://bj.news.163.com/18/0105/18/D7DI4989043897TC.html'}">
-        <img src="~assets/imgs/icon-004.jpg">
-        <p>案列分享</p>
-      </div> 
-      <div class="l-flex-vhc l-grid-item" v-link="{path: 'http://sj.qq.com/myapp/detail.htm?apkName=com.expflow.reading'}">
-        <img src="~assets/imgs/icon-005.jpg">
-        <p>产品展示</p>
-      </div>
-      <!--
-      <div class="l-flex-vhc l-grid-item" v-link="{path: '/wellife'}">
-        <img src="~assets/imgs/icon-006.jpg">
-        <p>智慧生活</p>
-      </div>
-      <div class="l-flex-vhc l-grid-item" v-link="{path: '/australia'}"> 
-        <img src="~assets/imgs/icon-007.jpg">
-        <p>澳式风情</p>
-      </div>
-      <div class="l-flex-vhc l-grid-item" v-link="{path: 'http://www.hzzx3d.com/news/aylson/index.html'}">
-        <img src="~assets/imgs/icon-008.jpg">
-        <p>720展厅</p>
-      </div>
-      <div class="l-flex-vhc l-grid-item" v-link="{path: '/order/tracking'}">
-        <img src="~assets/imgs/icon-014.jpg">
-        <p>订单跟踪</p>
-      </div>
-      -->
     </div>
-
-    <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
-      <h3 class="l-rest">幂动资讯</h3>
-      <a class="l-fsize-sm"><i class="iconfont">&#xe602;</i></a>
+    <div class="l-flex-wrap l-grid">
+      <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
+        <h3 class="l-rest">昨日收入</h3>
+      </div>
     </div>
-    <news-list :list="news.list" :loading="news.loading"></news-list>
+    <div class="l-flex-wrap l-grid">
+      <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
+        <h3 class="l-rest">账号余额</h3>
+      </div>
+    </div>
+    <div class="l-flex-wrap l-grid">
+      <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
+        <h3 class="l-rest">我的邀请</h3>
+      </div>
+    </div>
+    <div class="l-flex-wrap l-grid">
+      <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
+        <h3 class="l-rest">分日数据</h3>
+      </div>
+    </div>
+    <div class="l-flex-wrap l-grid">
+      <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
+        <h3 class="l-rest">分日数据趋势</h3>
+      </div>
+    </div>
   </div>
 </template>
 <script>

@@ -11,10 +11,10 @@ export default {
     auth: true,
     component: (resolve) => require([_PAGE + '/home'], resolve)
   },
-  '/activity': {
+  '/withdraw': {
     title: '提现中心',
     auth: true,
-    component: (resolve) => require([_PAGE + '/activity-info'], resolve)
+    component: (resolve) => require([_PAGE + '/withdraw'], resolve)
   },
 	'/login': {
     title: '登录',
@@ -77,16 +77,17 @@ export default {
     title: '在线预约',
     component: (resolve) => require([_PAGE + '/booking'], resolve)
   },
-  //'/activity': {
-  //  title: '活动中心',
-  //  component: (resolve) => require([_PAGE + '/activity'], resolve)
-  //},
+  '/activity': {
+    title: '活动中心',
+    auth: true,
+    component: (resolve) => require([_PAGE + '/activity'], resolve)
+  },
   '/activity/info': {
     title: '活动详情',
     component: (resolve) => require([_PAGE + '/activity-info'], resolve)
   },
   '/product': {
-    title: '产品中心',
+    title: '提现中心',
     mainPage: true,
     component: (resolve) => require([_PAGE + '/product'], resolve)
   },
