@@ -1,10 +1,10 @@
 <template>
   <div class="l-select-none">
-    <blur class="l-user-avatar l-flex-hc" :blur-amount="15" :height="120" :url="defaultVal.avatarBg" v-link="'/user/info'">
+    <blur class="l-user-avatar l-flex-hc" :blur-amount="15" :height="120" :url="defaultVal.avatarBg">
       <div class="avatar" :style="{'background-image': 'url('+ (userinfo.photo || defaultVal.avatar) +')'}"></div>
-      <div v-if="userinfo.mobilePhone" class="l-rest">
-        <h3 v-text="userinfo.realName || '未设置姓名'"></h3>
-        <p v-text="userinfo.mobilePhone">13800138000</p>
+      <div v-if="userinfo.webPhoneNum" class="l-rest">
+        <h3 v-text="userinfo.userDesc || '未设置姓名'"></h3>
+        <p v-text="userinfo.webPhoneNum">180********</p>
       </div>
       <div v-else class="l-rest">
         <p>您还没登录</p>
@@ -35,21 +35,22 @@
       <cell title="我的优惠劵" link="/user/coupon">
         <i slot="icon" class="iconfont" style="background-color:#f19824;">&#xe625;</i>
       </cell>
-      -->
       <cell title="重置密码" link="/user/pwd">
         <i slot="icon" class="iconfont" style="background-color:#f96827;">&#xe613;</i>
       </cell>
+      -->
       <cell title="意见反馈" link="/user/faq">
         <i slot="icon" class="iconfont" style="background-color:#41af58;">&#xe64d;</i>
       </cell>
+      <!--
       <cell title="400-820-XXXX" value="09:00-18:00" :is-link="true" @click="callPhone('400-820-XXXX')">
         <i slot="icon" class="iconfont" style="background-color:#fe486e;">&#xe652;</i>
       </cell>
-      <!--
-      <cell v-if="userinfo.mobilePhone" title="退出登录" :is-link="true" @click="logout">
+      -->
+      <cell v-if="userinfo.webPhoneNum" title="退出登录" :is-link="true" @click="logout">
         <i slot="icon" class="iconfont" style="background-color:#999999;">&#xe7c7;</i>
       </cell>
-      -->
+      
     </group>
   </div>
 </template>
@@ -79,18 +80,30 @@ export default {
     },
     logout() {
       let self = this
+      var r = confirm("确定退出登录吗?")
+      if (r == true){
+        self.acClearUserInfo()
+        self.$router.replace('/login')
+        self.$router.replace('/login?redirect=' + self.$route.path)
+        self.$router.go({
+          path: 'login?redirect=' + self.$route.path,
+          replace: true
+        })
+      }
+      /*
       self.$vux.confirm.show({
-        title: '确定退出登录？',
+        title: '确定退出登录123？',
         onConfirm() {
           self.acClearUserInfo()
           self.$router.replace('/login')
-          // self.$router.replace('/login?redirect=' + self.$route.path)
-          // self.$router.go({
-          //   path: 'login?redirect=' + self.$route.path,
-          //   replace: true
-          // })
+          self.$router.replace('/login?redirect=' + self.$route.path)
+          self.$router.go({
+            path: 'login?redirect=' + self.$route.path,
+            replace: true
+          })
         }
       })
+      */
     }
   }
 }

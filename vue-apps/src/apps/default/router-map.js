@@ -11,11 +11,6 @@ export default {
     auth: true,
     component: (resolve) => require([_PAGE + '/home'], resolve)
   },
-  '/withdraw': {
-    title: '提现中心',
-    auth: true,
-    component: (resolve) => require([_PAGE + '/withdraw'], resolve)
-  },
 	'/login': {
     title: '登录',
     component: (resolve) => require([_PAGE + '/login'], resolve)
@@ -89,6 +84,7 @@ export default {
   '/product': {
     title: '提现中心',
     mainPage: true,
+    auth: true,
     component: (resolve) => require([_PAGE + '/product'], resolve)
   },
   '/product/list': {

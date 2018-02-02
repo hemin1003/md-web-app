@@ -5,7 +5,7 @@ const getters = {
 	route: (state) => state.route,
 	userinfo: (state) => {
 		let userinfo = null
-		if(state.app_userinfo && state.app_userinfo.mobilePhone){
+		if(state.app_userinfo && state.app_userinfo.phoneNum){
 			userinfo = state.app_userinfo
 		}else{
 			userinfo = storage.local.get('userinfo') || {}

@@ -15,7 +15,7 @@
             <span slot="label">总收益</span>
           </tabbar-item>
           <tabbar-item v-link="{path:'/product', replace: true}" :selected="route.path === '/product'">
-            <i slot="icon" class="iconfont">&#xe774;</i>
+            <i slot="icon" class="iconfont">&#xe6d3;</i>
             <span slot="label">提现中心</span>
           </tabbar-item>
          <!--

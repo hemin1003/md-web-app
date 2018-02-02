@@ -68,7 +68,7 @@ router.beforeEach(({to, next, abort}) => {
 router.beforeEach((transition) => {
   if(transition.to.auth){
     let userInfo = storage.local.get('userinfo')
-    if( !(userInfo && userInfo.mobilePhone) ){
+    if( !(userInfo && userInfo.webPhoneNum) ){
       transition.redirect('/login')
     }
     return true

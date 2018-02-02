@@ -86,6 +86,9 @@ class List {
       case 'store':             // 门店列表
         url = 'owner/visitor/getStoreList'
         break
+      case 'invites':            // 大咖邀请列表
+        url = 'owner/daka/getInviteList'
+        break
     }
     this.params.page = this.page
     this.params.rows = this.rows
@@ -987,5 +990,16 @@ export default {
       })
       return promise
     }
-  }
+  },
+  // 大咖邀请列表
+  invites: {
+    getList(rows = 10) {
+      let promise = new Promise((resolve) => {
+        let list = new List('invites')
+        list.rows = rows
+        resolve(list)
+      })
+      return promise
+    }
+  },
 }

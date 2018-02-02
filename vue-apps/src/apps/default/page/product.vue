@@ -1,9 +1,9 @@
 <template>
   <div>
     <group class="l-group l-user-info">
-      <x-input class="l-input-arrow" title="提现方式" :value.sync="" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
+      <address title="提现方式" :value.sync="withdraw.value" raw-value :list="withdraw.data" placeholder="请选择提现方式"></address>
       <x-input class="l-input-arrow" title="微信号/支付宝账号" :value.sync="" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
-      <x-input class="l-input-arrow" title="真实姓名" :value.sync="formData.qq1" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="真实姓名" :value.sync="formData.qq1" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
       <x-input class="l-input-arrow" title="未提现余额" :value.sync="formData.qq2" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
       <x-input class="l-input-arrow" title="提现金额" :value.sync="formData.qq3" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
     </group>
@@ -14,13 +14,62 @@
       <x-button type="primary" @click="submit">提交</x-button>
       <x-button type="primary" @click="submit">修改支付信息</x-button>
     </div>
-    <div>
-      <div>
-        结算说明：
-        <div>1. 账户余额满10元即可申请提现</div>
-        <div>2. 结算方式为周结，每周周五晚24点前提交的提款申请，平台将于下周周一到周五进行处理，陆续打款</div>
+    <div style="margin: 25px; font-size: 12px">
+        <h3>结算说明</h3>
+        <ol>
+            <li>账户余额满10元即可申请提现。</li>
+            <li>结算方式为周结，每周周五晚24点前提交的提款申请，平台将于下周周一到周五进行处理，陆续打款。</li>
+            <li>过了每周周五晚24点提交的提款申请，将自动计入下个提款周期，于下下周周一到周五进行处理打款。</li>
+            <li>提款申请可随时提交（一个月提交一次也没有问题，相当于提交以后最晚一周之内打款），每周会自动处理一次，如无特殊必要，请集中一次提交，减少平台的审核工作量。</li>
+            <li>平台支持微信或者支付宝转账，请按照要求完善个人提现信息。微信请提供微信号（非微信昵称），以及个人真实姓名。支付宝请提供支付宝账号，个人真实姓名。</li>
+            <li>请完善个人提款账号信息，完善后方可提现，若由于提供错误提款信息导致的转账错误，由个人承担。</li>
+        </ol>
+    </div>
+    <div class="l-flex-wrap l-grid">
+      <div style="width: 100%;" class="l-flex-vc l-title-hd">
+        <h3>账户情况</h3>
+        <table style="margin-top: 10px; color: #808080;">
+          <thead>
+            <tr>
+              <td>账户余额</td>
+              <td>累计提现金额</td>
+              <td>总收入</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0（不含审核中提现金额）</td>
+              <td>0（含审核中提现金额）</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+    <div class="l-flex-wrap l-grid">
+      <div style="width: 100%;" class="l-flex-vc l-title-hd">
+        <h3>我的申请</h3>
+        <table style="margin-top: 10px; color: #808080;">
+          <thead>
+            <tr>
+              <td>申请时间</td>
+              <td>申请金额</td>
+              <td>实际提现金额</td>
+              <td>状态</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td>0</td>
+              <td>0</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!--
     <div class="l-flex-wrap l-grid">
       <div class="l-flex-hc l-title-hd" v-link="{path: '/news/list'}">
         <h3 class="l-rest">账户情况</h3>
@@ -31,6 +80,7 @@
         <h3 class="l-rest">我的申请</h3>
       </div>
     </div>
+    -->
   </div>
 </template>
 
@@ -60,6 +110,7 @@ export default {
   data() {
     return {
       defaultVal: config.defaultVal,
+      selected: '',
       formData: {
         photo: this.userinfo.photo,
         realName: this.userinfo.realName,
@@ -72,6 +123,11 @@ export default {
         data: AddressChinaData,
         value: [],
         name: []
+      },
+      withdraw : {
+        data: [],
+        value: [],
+        name:  []
       }
     }
   },
