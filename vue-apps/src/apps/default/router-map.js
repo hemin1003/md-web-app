@@ -12,7 +12,7 @@ export default {
     component: (resolve) => require([_PAGE + '/home'], resolve)
   },
 	'/login': {
-    title: '登录',
+    title: '大咖管理系统',
     component: (resolve) => require([_PAGE + '/login'], resolve)
   },
   '/register': {
