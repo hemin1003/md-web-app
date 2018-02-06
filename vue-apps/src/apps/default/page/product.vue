@@ -1,18 +1,17 @@
 <template>
   <div>
     <group class="l-group l-user-info">
-      <address title="提现方式" :value.sync="withdraw.value" raw-value :list="withdraw.data" placeholder="请选择提现方式"></address>
-      <x-input class="l-input-arrow" title="微信号/支付宝账号" :value.sync="" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
-      <x-input class="l-input-arrow" title="真实姓名" :value.sync="formData.qq1" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
-      <x-input class="l-input-arrow" title="未提现余额" :value.sync="formData.qq2" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
-      <x-input class="l-input-arrow" title="提现金额" :value.sync="formData.qq3" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="支付宝账号" :value.sync="formData.webAlipay" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="真实姓名" :value.sync="formData.webRealName" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="未提现余额" :value.sync="formData.webBalance" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="提现金额" :value.sync="formData.withdraw" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
     </group>
     <div class="text">
       请仔细核对以上信息，最少提现为10元
     </div>
     <div class="l-btn-area">
       <x-button type="primary" @click="submit">提交</x-button>
-      <x-button type="primary" @click="submit">修改支付信息</x-button>
+      <!--<x-button type="primary" @click="submit">修改支付信息</x-button>-->
     </div>
     <div style="margin: 25px; font-size: 12px">
         <h3>结算说明</h3>
@@ -38,9 +37,9 @@
           </thead>
           <tbody>
             <tr>
-              <td>0（不含审核中提现金额）</td>
-              <td>0（含审核中提现金额）</td>
-              <td>0</td>
+              <td>{{userinfo.webBalance}}（不含审核中提现金额）</td>
+              <td>{{userinfo.webWithdraw}}（含审核中提现金额）</td>
+              <td>{{userinfo.webTotal}}</td>
             </tr>
           </tbody>
         </table>
@@ -86,7 +85,7 @@
 
 <script>
 import { utils, storage } from 'assets/utils'
-import { Group, XInput, Cell, XButton, Address, AddressChinaData } from 'vux-components'
+import { Group, XInput, Cell, XButton} from 'vux-components'
 import name2value from 'vux/src/filters/name2value'
 import value2name from 'vux/src/filters/value2name'
 import { store, getters, actions } from '../vuex'
@@ -94,40 +93,36 @@ import config from '../config'
 
 export default {
   components: {
-    Group, XInput, Cell, XButton, Address, AddressChinaData
+    Group, XInput, Cell, XButton
   },
   route: {
     data() {
-      let valueArr = []
-      this.userinfo.provinceId && (valueArr[0] = this.userinfo.provinceId + '')
-      this.userinfo.cityId && (valueArr[1] = this.userinfo.cityId + '')
-      this.userinfo.areaId && (valueArr[2] = this.userinfo.areaId + '')
-      this.address.value = valueArr
+      const self = this
+      //获取最新个人信息
+      let webPhoneNum = self.webPhoneNum;
+      self.$http.post('owner/daka/getUserInfo', {
+        webPhoneNum: webPhoneNum
+      })
+      .then(({ body }) => {
+        if(body.success){
+          storage.local.set('userinfo', body.data)
+          self.acUpdateUserInfo()
+        }
+      })
     }
   },
   store,
   vuex: { getters, actions },
   data() {
     return {
+      webPhoneNum: this.userinfo.webPhoneNum,
       defaultVal: config.defaultVal,
       selected: '',
       formData: {
-        photo: this.userinfo.photo,
-        realName: this.userinfo.realName,
-        email: this.userinfo.email,
-        qq: this.userinfo.qq,
-        companyName: this.userinfo.companyName,
-        address: this.userinfo.address
-      },
-      address: {
-        data: AddressChinaData,
-        value: [],
-        name: []
-      },
-      withdraw : {
-        data: [],
-        value: [],
-        name:  []
+        webAlipay: this.userinfo.webAlipay,
+        webRealName: this.userinfo.webRealName,
+        webBalance: this.userinfo.webBalance,
+        withdraw: '10'
       }
     }
   },

@@ -28,6 +28,7 @@ class List {
     this.beforeAjax = utils.noop
     this.callback = utils.noop
 
+    this.phoneNum = 0
   }
   init() {
     this.isAjax = false
@@ -89,9 +90,13 @@ class List {
       case 'invites':            // 大咖邀请列表
         url = 'owner/daka/getInviteList'
         break
+      case 'studentDays':            // 大咖收徒分日数据
+        url = 'owner/daka/getStudentDay'
+        break
     }
     this.params.page = this.page
     this.params.rows = this.rows
+    this.params.phoneNum = this.phoneNum
     this.isLoading = true
     this.beforeAjax(this.isLoading)
     Vue.http.get(url, {
@@ -993,13 +998,27 @@ export default {
   },
   // 大咖邀请列表
   invites: {
-    getList(rows = 10) {
+    getList(rows = 10, phoneNum) {
+      //alert('rows=' + rows + ', phoneNum=' + phoneNum)
       let promise = new Promise((resolve) => {
         let list = new List('invites')
         list.rows = rows
+        list.phoneNum = phoneNum
         resolve(list)
       })
       return promise
     }
   },
+  // 大咖收徒分日数据
+  studentDays: {
+    getList(rows = 10, phoneNum) {
+      let promise = new Promise((resolve) => {
+        let list = new List('studentDays')
+        list.rows = rows
+        list.phoneNum = phoneNum
+        resolve(list)
+      })
+      return promise
+    }
+  }
 }

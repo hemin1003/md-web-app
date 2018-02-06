@@ -3,28 +3,28 @@
     <div class="l-flex-wrap l-grid">
       <div style="width: 100%;" class="l-flex-vc l-title-hd">
         <h3>今日收入</h3>
-        <font size="20" style="color: #808080; text-align: center">￥{{ info.today.income }}</font>
+        <font size="20" style="color: #808080; text-align: center">￥{{ info.today.seeIncome }}</font>
         <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15)" width="100%" color=#DCDCDC SIZE=1>
-        <label style="color: #808080; margin-top: 10px">新增徒弟：{{ info.today.allStudents }}</label>
-        <label style="color: #808080">有效徒弟：{{ info.today.validStus }}</label>
+        <label style="color: #808080; margin-top: 10px">新增徒弟：{{ info.today.newStus }}</label>
+        <label style="color: #808080">有效徒弟：{{ info.today.seeStus }}</label>
       </div>
     </div>
     <div class="l-flex-wrap l-grid">
       <div style="width: 100%;" class="l-flex-vc l-title-hd">
         <h3>昨日收入</h3>
-        <font size="20" style="color: #808080; text-align: center">￥{{ info.yesterday.income }}</font>
+        <font size="20" style="color: #808080; text-align: center">￥{{ info.yesterday.seeIncome }}</font>
         <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15)" width="100%" color=#DCDCDC SIZE=1>
-        <label style="color: #808080; margin-top: 10px">新增徒弟：{{ info.yesterday.allStudents }}</label>
-        <label style="color: #808080">有效徒弟：{{ info.yesterday.validStus }}</label>
+        <label style="color: #808080; margin-top: 10px">新增徒弟：{{ info.yesterday.newStus }}</label>
+        <label style="color: #808080">有效徒弟：{{ info.yesterday.seeStus }}</label>
       </div>
     </div>
     <div class="l-flex-wrap l-grid">
       <div style="width: 100%;" class="l-flex-vc l-title-hd">
         <h3>账户余额</h3>
-        <font size="20" style="color: #808080; text-align: center">￥{{ info.account.income }}</font>
+        <font size="20" style="color: #808080; text-align: center">￥{{ userinfo.webBalance }}</font>
         <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15)" width="100%" color=#DCDCDC SIZE=1>
-        <label style="color: #808080; margin-top: 10px">共引进徒弟：{{ info.account.allStudents }}</label>
-        <label style="color: #808080">有效徒弟：{{ info.account.validStus }}</label>
+        <label style="color: #808080; margin-top: 10px">总新增徒弟：{{ userinfo.webSumStus }}</label>
+        <label style="color: #808080">总有效徒弟：{{ userinfo.webValidStusSee }}</label>
         <button type="button" align="right" style="width: 25%; height:30px; background-color: #32CD32; font-size: 16px; color: white; margin-top: 10px; border: 1px solid #1E90FF" v-link="{path:'/product'}">我要提现</button>
       </div>
     </div>
@@ -34,7 +34,7 @@
         <table style="margin-top: 10px; color: #808080;">
           <thead>
             <tr>
-              <td>邀请大咖名</td>
+              <td>邀请大咖</td>
               <td>今日奖励</td>
               <td>累计奖励</td>
               <td>邀请时间</td>
@@ -42,10 +42,10 @@
           </thead>
           <tbody>
             <tr v-for="invite in invites.list">
-              <td>{{ invite.userName }}</td>
-              <td>{{ invite.gold }}</td>
-              <td>{{ invite.gold }}</td>
-              <td>{{ invite.registerDate }}</td>
+              <td>{{ invite.invitedPhoneNum }}</td>
+              <td>{{ invite.todayAward }}</td>
+              <td>{{ invite.totalAward }}</td>
+              <td>{{ invite.createDate }}</td>
             </tr>
             <tr>
               <td>总计</td>
@@ -70,17 +70,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="dayIncome in info.dayIncomeList">
-              <td>{{ dayIncome.day }}</td>
-              <td>{{ dayIncome.allStudents }}</td>
-              <td>{{ dayIncome.validStus }}</td>
-              <td>{{ dayIncome.income }}</td>
+            <tr v-for="studentDay in studentDays.list">
+              <td>{{ studentDay.date }}</td>
+              <td>{{ studentDay.newStus }}</td>
+              <td>{{ studentDay.seeStus }}</td>
+              <td>{{ studentDay.seeIncome }}</td>
             </tr>
             <tr>
               <td>总计</td>
-              <td>{{ info.dayIncomeSum.allStudentsSum }}</td>
-              <td>{{ info.dayIncomeSum.validStusSum }}</td>
-              <td>{{ info.dayIncomeSum.allIncomeSum }}</td>
+              <td>{{ studentDaysSum.newStusSum }}</td>
+              <td>{{ studentDaysSum.seeStusSum }}</td>
+              <td>{{ studentDaysSum.seeIncomeSum }}</td>
             </tr>
           </tbody>
         </table>
@@ -114,10 +114,14 @@
   </div>
 </template>
 <script>
+import { utils, storage } from 'assets/lib'
 import { Swiper, Masker, Flexbox, FlexboxItem } from 'vux-components'
 import NewsList from '../components/news-list'
 import config from '../config'
 import server from '../server'
+import name2value from 'vux/src/filters/name2value'
+import value2name from 'vux/src/filters/value2name'
+import { store, getters, actions } from '../vuex'
 
 export default {
   components: {
@@ -126,22 +130,71 @@ export default {
   route: {
     data() {
       const self = this
-      server.invites.getList(10).then( listEntity => {
+      let webPhoneNum = self.webPhoneNum;
+
+      //邀请奖励数据
+      server.invites.getList(30, webPhoneNum).then( listEntity => {
         listEntity.callback = function(){
           self.invites.loading = !listEntity.isAjax
           self.invites.list = listEntity.alldata
 
           for (var i = self.invites.list.length - 1; i >= 0; i--) {
-            self.invitesSum.todayIncomeSum += parseInt(self.invites.list[i].gold);
-            self.invitesSum.allIncomeSum += parseInt(self.invites.list[i].gold);
+            self.invitesSum.todayIncomeSum += parseFloat(self.invites.list[i].todayAward);
+            self.invitesSum.allIncomeSum += parseFloat(self.invites.list[i].totalAward);
           }
         }
         listEntity.init()
       })
+
+      //徒弟分日数据
+      let currentDay = CurentTimeDay(0);
+      let yesterDay = CurentTimeDay(-1);
+
+      self.$vux.loading.show('数据加载中...')
+      server.studentDays.getList(15, webPhoneNum).then( listEntity => {
+        listEntity.callback = function(){
+          self.$vux.loading.hide()
+          self.studentDays.loading = !listEntity.isAjax
+          self.studentDays.list = listEntity.alldata
+
+          for (var i = self.studentDays.list.length - 1; i >= 0; i--) {
+            self.studentDaysSum.newStusSum += parseFloat(self.studentDays.list[i].newStus);
+            self.studentDaysSum.seeStusSum += parseFloat(self.studentDays.list[i].seeStus);
+            self.studentDaysSum.seeIncomeSum += parseFloat(self.studentDays.list[i].seeIncome);
+            //今日收入
+            if(self.studentDays.list[i].date == currentDay){
+              self.info.today.seeIncome = self.studentDays.list[i].seeIncome;
+              self.info.today.newStus = self.studentDays.list[i].newStus;
+              self.info.today.seeStus = self.studentDays.list[i].seeStus;
+            }
+            //昨日收入
+            if(self.studentDays.list[i].date == yesterDay){
+              self.info.yesterday.seeIncome = self.studentDays.list[i].seeIncome;
+              self.info.yesterday.newStus = self.studentDays.list[i].newStus;
+              self.info.yesterday.seeStus = self.studentDays.list[i].seeStus;
+            }
+          }
+        }
+        listEntity.init()
+      })
+
+      //获取最新个人信息
+      self.$http.post('owner/daka/getUserInfo', {
+        webPhoneNum: webPhoneNum
+      })
+      .then(({ body }) => {
+        if(body.success){
+          storage.local.set('userinfo', body.data)
+          self.acUpdateUserInfo()
+        }
+      })
     }
   },
+  store,
+  vuex: { getters, actions },
   data() {
     return {
+      webPhoneNum: this.userinfo.webPhoneNum,
       invites: {
         list: [],
         loading: true
@@ -150,40 +203,85 @@ export default {
         todayIncomeSum: 0,
         allIncomeSum: 0
       },
+      studentDays: {
+        list: [],
+        loading: true
+      },
+      studentDaysSum: {
+        newStusSum: 0,
+        seeStusSum: 0,
+        seeIncomeSum: 0
+      },
       info: {
         today: {
-          income: 99,
-          allStudents: 88,
-          validStus: 77
+          seeIncome: 0,
+          newStus: 0,
+          seeStus: 0
         },
         yesterday: {
-          income: 66,
-          allStudents: 55,
-          validStus: 44
-        },
-        account: {
-          income: 33,
-          allStudents: 22,
-          validStus: 11
-        },
-        dayIncomeList: [
-          { day: '2018-02-01', allStudents: 19, validStus: 20, income: 100 },
-          { day: '2018-01-31', allStudents: 19, validStus: 20, income: 100 },
-          { day: '2018-01-30', allStudents: 19, validStus: 20, income: 100 },
-          { day: '2018-01-29', allStudents: 19, validStus: 20, income: 100 },
-          { day: '2018-01-28', allStudents: 19, validStus: 20, income: 100 },
-          { day: '2018-01-27', allStudents: 19, validStus: 20, income: 100 },
-          { day: '2018-01-26', allStudents: 19, validStus: 20, income: 100 }
-        ],
-        dayIncomeSum: {
-          allStudentsSum: 133,
-          validStusSum: 140,
-          allIncomeSum: 700
+          seeIncome: 0,
+          newStus: 0,
+          seeStus: 0
         }
       }
     }
   }
 }
+
+
+function CurentTimeDay(day){ 
+  var now = new Date();
+  var year = now.getFullYear();       //年
+  var month = now.getMonth() + 1;     //月
+  var day = now.getDate() + day;            //日
+  var hh = now.getHours();            //时
+  var mm = now.getMinutes();          //分
+  var ss = now.getSeconds();           //秒
+  var clock = year + "-";
+  if(month < 10)
+      clock += "0";
+  
+  clock += month + "-";
+  
+  if(day < 10)
+      clock += "0";
+      
+  clock += day;
+  return(clock); 
+}
+
+function CurentTime(){ 
+  var now = new Date();
+  var year = now.getFullYear();       //年
+  var month = now.getMonth() + 1;     //月
+  var day = now.getDate();            //日
+  var hh = now.getHours();            //时
+  var mm = now.getMinutes();          //分
+  var ss = now.getSeconds();           //秒
+  var clock = year + "-";
+  if(month < 10)
+      clock += "0";
+  
+  clock += month + "-";
+  
+  if(day < 10)
+      clock += "0";
+      
+  clock += day + " ";
+  
+  if(hh < 10)
+      clock += "0";
+      
+  clock += hh + ":";
+  if (mm < 10) clock += '0'; 
+  clock += mm + ":"; 
+   
+  if (ss < 10) clock += '0'; 
+  clock += ss; 
+  return(clock); 
+}
+
+
 </script>
 <style scoped lang="less">
 .l-grid{
