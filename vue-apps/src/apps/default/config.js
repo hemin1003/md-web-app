@@ -4,7 +4,7 @@ const _PATH = '/'
 let _qrcode = require('assets/imgs/yz-qrcode-online.jpg')
 let _appid = 'xxx'
 // 后端服务接口地址
-let _serverPath = 'http://192.168.3.70:8081/aylson-owner'
+let _serverPath = 'http://localhost:8081/aylson-owner'
 
 export default {
   getHost: () => _HOST,

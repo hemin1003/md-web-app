@@ -93,6 +93,9 @@ class List {
       case 'studentDays':            // 大咖收徒分日数据
         url = 'owner/daka/getStudentDay'
         break
+      case 'withdrawHis':            // 大咖提现列表数据
+        url = 'owner/daka/getWithdrawHis'
+        break
     }
     this.params.page = this.page
     this.params.rows = this.rows
@@ -1014,6 +1017,18 @@ export default {
     getList(rows = 10, phoneNum) {
       let promise = new Promise((resolve) => {
         let list = new List('studentDays')
+        list.rows = rows
+        list.phoneNum = phoneNum
+        resolve(list)
+      })
+      return promise
+    }
+  },
+  // 大咖提现列表数据
+  withdrawHis: {
+    getList(rows = 10, phoneNum) {
+      let promise = new Promise((resolve) => {
+        let list = new List('withdrawHis')
         list.rows = rows
         list.phoneNum = phoneNum
         resolve(list)

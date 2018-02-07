@@ -1,10 +1,10 @@
 <template>
   <div>
     <group class="l-group l-user-info">
-      <x-input class="l-input-arrow" title="支付宝账号" :value.sync="formData.webAlipay" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
-      <x-input class="l-input-arrow" title="真实姓名" :value.sync="formData.webRealName" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="支付宝账号" :value.sync="formData.account" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="真实姓名" :value.sync="formData.name" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
       <x-input class="l-input-arrow" title="未提现余额" :value.sync="formData.webBalance" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
-      <x-input class="l-input-arrow" title="提现金额" :value.sync="formData.withdraw" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="提现金额" :value.sync="formData.income" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
     </group>
     <div class="text">
       请仔细核对以上信息，最少提现为10元
@@ -58,10 +58,16 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-for="obj in withdrawHis.list">
+              <td>{{ obj.withdrawTime }}</td>
+              <td>{{ obj.income }}</td>
+              <td>{{ obj.realIncome }}</td>
+              <td>{{ obj.status }}</td>
+            </tr>
             <tr>
-              <td></td>
-              <td>0</td>
-              <td>0</td>
+              <td>总计</td>
+              <td>{{ withdrawHisSum.incomeSum }}</td>
+              <td>{{ withdrawHisSum.realIncomeSum }}</td>
               <td></td>
             </tr>
           </tbody>
@@ -90,7 +96,10 @@ import name2value from 'vux/src/filters/name2value'
 import value2name from 'vux/src/filters/value2name'
 import { store, getters, actions } from '../vuex'
 import config from '../config'
+import server from '../server'
 
+// 上一页
+let prevPath = storage.session.get('_history').prevPath
 export default {
   components: {
     Group, XInput, Cell, XButton
@@ -109,6 +118,22 @@ export default {
           self.acUpdateUserInfo()
         }
       })
+
+      //提现列表数据
+      self.$vux.loading.show('数据加载中...')
+      server.withdrawHis.getList(15, webPhoneNum).then( listEntity => {
+        listEntity.callback = function(){
+          self.$vux.loading.hide()
+          self.withdrawHis.loading = !listEntity.isAjax
+          self.withdrawHis.list = listEntity.alldata
+
+          for (var i = self.withdrawHis.list.length - 1; i >= 0; i--) {
+            self.withdrawHisSum.incomeSum += parseFloat(self.withdrawHis.list[i].income);
+            self.withdrawHisSum.realIncomeSum += parseFloat(self.withdrawHis.list[i].realIncome);
+          }
+        }
+        listEntity.init()
+      })
     }
   },
   store,
@@ -119,43 +144,56 @@ export default {
       defaultVal: config.defaultVal,
       selected: '',
       formData: {
-        webAlipay: this.userinfo.webAlipay,
-        webRealName: this.userinfo.webRealName,
+        phoneNum: this.userinfo.webPhoneNum,
+        account: this.userinfo.webAlipay,
+        name: this.userinfo.webRealName,
         webBalance: this.userinfo.webBalance,
-        withdraw: '10'
+        income: '10'
+      },
+      withdrawHis: {
+        list: [],
+        loading: true
+      },
+      withdrawHisSum: {
+        incomeSum: 0,
+        realIncomeSum: 0
       }
     }
   },
   methods: {
     submit() {
       const self = this
-      self.formData.id = self.userinfo.id
-      if(self.address.value){
-        self.formData.provinceId = self.address.value[0] || ''
-        self.formData.cityId = self.address.value[1] || ''
-        self.formData.areaId = self.address.value[2] || ''
 
-        self.address.name = value2name(self.address.value, AddressChinaData).split(' ')
-        self.formData.province = self.address.name[0] || ''
-        self.formData.city = self.address.name[1] || ''
-        self.formData.area = self.address.name[2] || ''
+      if(!self.formData.income){
+        self.$vux.toptips.show('提现金额不能为空')
+        return 
+      }
+      let incomeInt = parseFloat(self.formData.income);
+      if(incomeInt < 10){
+        self.$vux.toptips.show('提现金额不能低于10元')
+        return 
+      }
+      let webBalanceInt = parseFloat(self.formData.webBalance);
+      if(webBalanceInt - incomeInt < 0){
+        self.$vux.toptips.show('余额不足')
+        return 
       }
 
-      self.$vux.loading.show('保存中')
-      self.$http.post('owner/modifyMemPersonalInfo', self.formData)
+      self.$vux.loading.show('提交中')
+      self.$http.post('owner/user/doWithdraw', self.formData)
         .then(({ body }) => {
           self.$vux.loading.hide()
           if(body.success){
-            storage.local.set('userinfo', Object.assign(self.userinfo, self.formData))
+            storage.local.set('userinfo', body.data)
             self.acUpdateUserInfo()
             self.$vux.toast.show({
-              text: '保存成功',
+              text: '申请成功',
               onHide(){
-                self.$router.go('/user')
+                self.$router.go('/home')
               }
             })
           }else{
-            self.$vux.toptips.show(body.message || '保存失败')
+            self.$vux.toptips.show(body.message || '申请失败')
           }
         }, (error) => {
           self.$vux.loading.hide()
