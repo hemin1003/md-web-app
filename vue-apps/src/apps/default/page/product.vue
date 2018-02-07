@@ -3,7 +3,7 @@
     <group class="l-group l-user-info">
       <x-input class="l-input-arrow" title="支付宝账号" :value.sync="formData.account" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
       <x-input class="l-input-arrow" title="真实姓名" :value.sync="formData.name" placeholder="请填写" :show-clear="false" text-align="right"></x-input>
-      <x-input class="l-input-arrow" title="未提现余额" :value.sync="formData.webBalance" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
+      <x-input class="l-input-arrow" title="未提现余额" :value.sync="formData.webBalance" :disabled="true" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
       <x-input class="l-input-arrow" title="提现金额" :value.sync="formData.income" placeholder="请填写" keyboard="number" :show-clear="false" text-align="right"></x-input>
     </group>
     <div class="text">
@@ -116,6 +116,7 @@ export default {
         if(body.success){
           storage.local.set('userinfo', body.data)
           self.acUpdateUserInfo()
+          self.formData.webBalance = self.userinfo.webBalance
         }
       })
 
@@ -148,7 +149,7 @@ export default {
         account: this.userinfo.webAlipay,
         name: this.userinfo.webRealName,
         webBalance: this.userinfo.webBalance,
-        income: '10'
+        income: '0'
       },
       withdrawHis: {
         list: [],
