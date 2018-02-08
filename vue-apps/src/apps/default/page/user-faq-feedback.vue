@@ -80,7 +80,7 @@ export default {
     },
     send() {
       const self = this
-      self.formData.clientId = self.userinfo.id 
+      self.formData.clientId = self.userinfo.webPhoneNum 
       self.formData.feedBackId = self.info.id 
       if(!self.formData.replyCont){
         self.$vux.toptips.show('请输入回复内容')

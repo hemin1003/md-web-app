@@ -34,7 +34,7 @@ export default {
   methods: {
     submit() {
       const self = this
-      self.formData.clientId = self.userinfo.id 
+      self.formData.clientId = self.userinfo.webPhoneNum 
       if(!self.formData.title){
         self.$vux.toptips.show('标题不能为空')
         return

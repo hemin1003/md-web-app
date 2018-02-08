@@ -44,7 +44,7 @@ export default {
         listEntity.init()
       })
 
-      server.faq.getFeedBackList(self.userinfo.id).then( listEntity => {
+      server.faq.getFeedBackList(self.userinfo.webPhoneNum).then( listEntity => {
         listEntity.callback = function(){
           self.feedbackScroller.pullupStatus = 'default'
           self.feedbackScroller.list = listEntity.alldata
