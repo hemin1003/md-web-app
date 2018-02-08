@@ -130,7 +130,9 @@ export default {
 
           for (var i = self.withdrawHis.list.length - 1; i >= 0; i--) {
             self.withdrawHisSum.incomeSum += parseFloat(self.withdrawHis.list[i].income);
-            self.withdrawHisSum.realIncomeSum += parseFloat(self.withdrawHis.list[i].realIncome);
+            if(self.withdrawHis.list[i].statusType == 2){
+              self.withdrawHisSum.realIncomeSum += parseFloat(self.withdrawHis.list[i].realIncome);  
+            }
           }
         }
         listEntity.init()
